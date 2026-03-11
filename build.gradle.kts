@@ -21,6 +21,7 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
+    testImplementation("org.xerial:sqlite-jdbc:3.50.2.0")
 }
 
 tasks.withType<JavaCompile>().configureEach {

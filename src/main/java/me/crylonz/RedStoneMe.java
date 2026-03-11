@@ -1,6 +1,7 @@
 package me.crylonz;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ public class RedStoneMe extends JavaPlugin implements Listener {
 
     public static ArrayList<RedStoneTrigger> redStoneTriggers = new ArrayList<>();
     public static final Logger log = Logger.getLogger("Minecraft");
+    private SQLiteStorage storage;
 
     public void onEnable() {
         PluginManager pm = getServer().getPluginManager();
@@ -34,32 +36,30 @@ public class RedStoneMe extends JavaPlugin implements Listener {
 
         Objects.requireNonNull(getCommand("rsm")).setTabCompleter(new TabCompletion());
 
-        File configFile = new File(this.getDataFolder(), "config.yml");
-        if (!configFile.exists()) {
-
-            getConfig().set("redStoneTriggers", redStoneTriggers);
-            saveConfig();
-        } else {
-
-           redStoneTriggers = (ArrayList<RedStoneTrigger>) getConfig().get("redStoneTriggers");
-
-            if (redStoneTriggers == null)
-                redStoneTriggers = new ArrayList<>();
+        if (!getDataFolder().exists() && !getDataFolder().mkdirs()) {
+            getLogger().warning("Unable to create plugin data directory");
         }
+
+        storage = new SQLiteStorage(this);
+        storage.initialize();
+        redStoneTriggers = storage.loadTriggers();
+        migrateLegacyConfig();
 
         checkTrigger();
     }
 
-    public void onDisable() { }
+    public void onDisable() {
+        persistTriggers();
+    }
 
     @EventHandler
     public void onBlockBreakEvent(BlockBreakEvent e) {
-
-        for (RedStoneTrigger rt : redStoneTriggers) {
+        Iterator<RedStoneTrigger> iterator = redStoneTriggers.iterator();
+        while (iterator.hasNext()) {
+            RedStoneTrigger rt = iterator.next();
             if (rt.getLoc().equals(e.getBlock().getLocation())) {
-                redStoneTriggers.remove(rt);
-                getConfig().set("redStoneTriggers", redStoneTriggers);
-                saveConfig();
+                iterator.remove();
+                persistTriggers();
                 break;
             }
         }
@@ -104,6 +104,35 @@ public class RedStoneMe extends JavaPlugin implements Listener {
 
     public static boolean isOwnerOfTrigger(Player p, RedStoneTrigger rt) {
         return rt.getOwner().equalsIgnoreCase(p.getUniqueId().toString());
+    }
+
+    public void persistTriggers() {
+        storage.saveTriggers(redStoneTriggers);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void migrateLegacyConfig() {
+        File configFile = new File(this.getDataFolder(), "config.yml");
+        if (!configFile.exists() || storage.hasTriggers()) {
+            return;
+        }
+
+        reloadConfig();
+        Object serializedTriggers = getConfig().get("redStoneTriggers");
+        if (!(serializedTriggers instanceof ArrayList)) {
+            return;
+        }
+
+        redStoneTriggers = (ArrayList<RedStoneTrigger>) serializedTriggers;
+        if (redStoneTriggers == null || redStoneTriggers.isEmpty()) {
+            redStoneTriggers = new ArrayList<>();
+            return;
+        }
+
+        persistTriggers();
+        getLogger().info("Migrated " + redStoneTriggers.size() + " triggers from config.yml to SQLite");
+        getConfig().set("redStoneTriggers", null);
+        saveConfig();
     }
 }
 

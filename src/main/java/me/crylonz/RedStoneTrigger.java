@@ -135,6 +135,14 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         this.owner = owner;
     }
 
+    public String getWorldName() {
+        return worldName;
+    }
+
+    public void setWorldName(String worldName) {
+        this.worldName = worldName;
+    }
+
     public boolean isPublic() {
         return isPublic;
     }

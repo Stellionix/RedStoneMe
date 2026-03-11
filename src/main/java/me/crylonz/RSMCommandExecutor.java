@@ -7,8 +7,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-
 import java.util.UUID;
 
 import static me.crylonz.RedStoneMe.isOwnerOfTrigger;
@@ -16,9 +14,9 @@ import static me.crylonz.RedStoneMe.redStoneTriggers;
 
 public class RSMCommandExecutor implements CommandExecutor {
 
-    private final Plugin plugin;
+    private final RedStoneMe plugin;
 
-    public RSMCommandExecutor(Plugin p) {
+    public RSMCommandExecutor(RedStoneMe p) {
         this.plugin = p;
     }
 
@@ -70,8 +68,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                     {
                                         rt.trigger(false);
                                         isDestroyed = redStoneTriggers.remove(rt);
-                                        plugin.getConfig().set("redStoneTriggers", redStoneTriggers);
-                                        plugin.saveConfig();
+                                        plugin.persistTriggers();
                                     }
                                     else {
                                         player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.RED +"Only the owner can access to this trigger");
@@ -155,8 +152,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                     rt.addPlayer(player);
                                     redStoneTriggers.add(rt);
                                     player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.GREEN + "Trigger " + args[1] + " is enable");
-                                    plugin.getConfig().set("redStoneTriggers", redStoneTriggers);
-                                    plugin.saveConfig();
+                                    plugin.persistTriggers();
                                 } else {
                                     player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.RED + "You need to target with your cursor the block you want to trigger");
                                 }
@@ -177,8 +173,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                     {
                                         rt.setRadius(Integer.parseInt(args[2]));
                                         player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.GREEN + "Trigger radius of " + rt.getTriggerName() + " is set to " + args[2]);
-                                        plugin.getConfig().set("redStoneTriggers", redStoneTriggers);
-                                        plugin.saveConfig();
+                                        plugin.persistTriggers();
                                     }
                                     else {
                                         player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.RED +"Only the owner can access to this trigger");
@@ -202,7 +197,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                         {
                                             foundRt = true;
                                             rt.setEnable(args[2].equalsIgnoreCase("on"));
-                                            this.plugin.saveConfig();
+                                            this.plugin.persistTriggers();
                                         }
                                         else {
                                             player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.RED +"Only the owner can access to this trigger");
@@ -237,7 +232,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                         {
                                             foundRt = true;
                                             rt.setPublic(args[2].equalsIgnoreCase("on"));
-                                            this.plugin.saveConfig();
+                                            this.plugin.persistTriggers();
                                         }
                                         else {
                                             player.sendMessage(ChatColor.GOLD + "[RedStoneMe] " + ChatColor.RED +"Only the owner can access to this trigger");
@@ -278,8 +273,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                                 foundPlayer = true;
                                                 if (!rt.getPlayers().contains(p.getUniqueId().toString())) {
                                                     rt.addPlayer(p);
-                                                    plugin.getConfig().set("redStoneTriggers", redStoneTriggers);
-                                                    plugin.saveConfig();
+                                                    plugin.persistTriggers();
                                                 }
                                                 break;
                                             }
@@ -313,8 +307,7 @@ public class RSMCommandExecutor implements CommandExecutor {
                                             if (p.getName().equalsIgnoreCase(args[2])) {
                                                 foundPlayer = true;
                                                 removed = rt.removePlayer(p);
-                                                plugin.getConfig().set("redStoneTriggers", redStoneTriggers);
-                                                plugin.saveConfig();
+                                                plugin.persistTriggers();
                                                 break;
                                             }
                                         }
