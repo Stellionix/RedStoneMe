@@ -17,7 +17,10 @@ public class SQLiteStorage {
 
     public SQLiteStorage(RedStoneMe plugin) {
         this.plugin = plugin;
-        File databaseFile = new File(plugin.getDataFolder(), "redstoneme.db");
+        File databaseFile = new File(
+                plugin.getDataFolder(),
+                plugin.getConfig().getString("storage.sqlite-file", "redstoneme.db")
+        );
         this.jdbcUrl = "jdbc:sqlite:" + databaseFile.getAbsolutePath();
     }
 

@@ -1,0 +1,47 @@
+####################################################################################################
+# DeadChest Configuration
+#
+# Plugin page and documentation:
+#   https://dev.bukkit.org/projects/redstoneme
+#
+# Support (Discord):
+#   https://discordapp.com/invite/jCsvJxS
+#
+####################################################################################################
+
+# This file controls storage and basic trigger protection.
+
+storage:
+  # SQLite database filename stored inside the plugin data folder.
+  # Example final path: plugins/RedStoneMe/redstoneme.db
+  sqlite-file: redstoneme.db
+
+protection:
+  # If true, players who are not the trigger owner cannot break the trigger block.
+  prevent-non-owner-break: true
+
+  # If true, the owner is allowed to break their own trigger block.
+  # If false, even the owner must use commands to remove a trigger.
+  allow-owner-break: true
+
+  # If true, players with redstoneme.admin can break protected triggers.
+  allow-admin-break: true
+
+  # If true, breaking the trigger block removes the trigger from storage.
+  # If false, the break event is ignored once it is authorized.
+  breaking-trigger-deletes-it: true
+
+messages:
+  # Send a message when a player is blocked by trigger protection.
+  notify-protected-break: true
+
+  # Send a message when a trigger is removed by block breaking.
+  notify-trigger-broken: true
+
+  # Message shown when the player is not allowed to break the trigger.
+  # Available colors use '&' codes.
+  protected-break: "&6[RedStoneMe] &cOnly the trigger owner can break this trigger."
+
+  # Message shown when a trigger is removed by breaking its block.
+  # {trigger} is replaced by the trigger name.
+  trigger-broken: "&6[RedStoneMe] &aTrigger {trigger} has been removed."

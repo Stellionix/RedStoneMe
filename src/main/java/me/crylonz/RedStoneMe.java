@@ -40,6 +40,10 @@ public class RedStoneMe extends JavaPlugin implements Listener {
             getLogger().warning("Unable to create plugin data directory");
         }
 
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
         storage = new SQLiteStorage(this);
         storage.initialize();
         redStoneTriggers = storage.loadTriggers();
@@ -58,8 +62,31 @@ public class RedStoneMe extends JavaPlugin implements Listener {
         while (iterator.hasNext()) {
             RedStoneTrigger rt = iterator.next();
             if (rt.getLoc().equals(e.getBlock().getLocation())) {
+                if (shouldProtectTriggerBreak(e.getPlayer(), rt)) {
+                    e.setCancelled(true);
+                    if (getConfig().getBoolean("messages.notify-protected-break", true)) {
+                        e.getPlayer().sendMessage(colorize(getConfig().getString(
+                                "messages.protected-break",
+                                "&6[RedStoneMe] &cOnly the trigger owner can break this trigger."
+                        )));
+                    }
+                    return;
+                }
+
+                if (!getConfig().getBoolean("protection.breaking-trigger-deletes-it", true)) {
+                    return;
+                }
+
                 iterator.remove();
                 persistTriggers();
+                if (getConfig().getBoolean("messages.notify-trigger-broken", true)) {
+                    e.getPlayer().sendMessage(colorize(
+                            getConfig().getString(
+                                    "messages.trigger-broken",
+                                    "&6[RedStoneMe] &aTrigger {trigger} has been removed."
+                            ).replace("{trigger}", rt.getTriggerName())
+                    ));
+                }
                 break;
             }
         }
@@ -108,6 +135,26 @@ public class RedStoneMe extends JavaPlugin implements Listener {
 
     public void persistTriggers() {
         storage.saveTriggers(redStoneTriggers);
+    }
+
+    private boolean shouldProtectTriggerBreak(Player player, RedStoneTrigger trigger) {
+        if (!getConfig().getBoolean("protection.prevent-non-owner-break", true)) {
+            return false;
+        }
+
+        if (isOwnerOfTrigger(player, trigger)) {
+            return !getConfig().getBoolean("protection.allow-owner-break", true);
+        }
+
+        if (player.hasPermission("redstoneme.admin")) {
+            return !getConfig().getBoolean("protection.allow-admin-break", true);
+        }
+
+        return true;
+    }
+
+    private String colorize(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
     }
 
     @SuppressWarnings("unchecked")

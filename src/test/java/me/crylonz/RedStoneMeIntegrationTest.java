@@ -41,6 +41,12 @@ class RedStoneMeIntegrationTest {
         server = MockBukkit.mock();
         world = server.addSimpleWorld("world");
         plugin = TestPluginFactory.create(tempDir);
+        plugin.getConfig().set("protection.prevent-non-owner-break", true);
+        plugin.getConfig().set("protection.allow-owner-break", true);
+        plugin.getConfig().set("protection.allow-admin-break", true);
+        plugin.getConfig().set("protection.breaking-trigger-deletes-it", true);
+        plugin.getConfig().set("messages.notify-protected-break", false);
+        plugin.getConfig().set("messages.notify-trigger-broken", false);
         owner = server.addPlayer("owner");
         guest = server.addPlayer("guest");
         owner.setOp(true);
@@ -139,6 +145,20 @@ class RedStoneMeIntegrationTest {
         assertTrue(completion.onTabComplete(owner, command, "rsm", new String[]{"destroy", ""}).contains("owned"));
         assertTrue(completion.onTabComplete(owner, command, "rsm", new String[]{"destroy", ""}).contains("shared"));
         assertFalse(completion.onTabComplete(owner, command, "rsm", new String[]{"destroy", ""}).contains("hidden"));
+    }
+
+    @Test
+    void nonOwnerCannotBreakProtectedTrigger() {
+        RedStoneTrigger trigger = createTrigger("protected");
+        RedStoneMe.redStoneTriggers.add(trigger);
+        guest.setOp(false);
+
+        BlockBreakEvent event = new BlockBreakEvent(world.getBlockAt(trigger.getLoc()), guest);
+        plugin.onBlockBreakEvent(event);
+
+        assertTrue(event.isCancelled());
+        assertEquals(1, RedStoneMe.redStoneTriggers.size());
+        assertEquals(0, plugin.getPersistCalls());
     }
 
     private RedStoneTrigger createTrigger(String name) {
