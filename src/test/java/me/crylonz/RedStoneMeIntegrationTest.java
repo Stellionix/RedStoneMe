@@ -13,9 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -123,11 +120,6 @@ class RedStoneMeIntegrationTest {
 
     @Test
     void migrateLegacyConfigImportsYamlIntoSQLite() throws Exception {
-        SQLiteStorage storage = new SQLiteStorage(plugin);
-        storage.initialize();
-        plugin.setPersistStorage(storage);
-        injectStorage(storage);
-
         RedStoneTrigger trigger = createTrigger("legacy");
         ArrayList<RedStoneTrigger> legacyTriggers = new ArrayList<>();
         legacyTriggers.add(trigger);
@@ -135,11 +127,10 @@ class RedStoneMeIntegrationTest {
         RedStoneMe.redStoneTriggers.clear();
         Files.createFile(tempDir.resolve("config.yml"));
 
-        Method migrate = RedStoneMe.class.getDeclaredMethod("migrateLegacyConfig");
-        migrate.setAccessible(true);
-        migrate.invoke(plugin);
+        TriggerRepository repository = new TriggerRepository(plugin);
+        repository.initialize();
 
-        ArrayList<RedStoneTrigger> loaded = storage.loadTriggers();
+        ArrayList<RedStoneTrigger> loaded = new SQLiteStorage(plugin).loadTriggers();
         assertEquals(1, loaded.size());
         assertEquals("legacy", loaded.get(0).getTriggerName());
         assertNull(plugin.getConfig().get("redStoneTriggers"));
@@ -186,13 +177,6 @@ class RedStoneMeIntegrationTest {
         trigger.addPlayer(owner);
         return trigger;
     }
-
-    private void injectStorage(SQLiteStorage storage) throws Exception {
-        Field storageField = RedStoneMe.class.getDeclaredField("storage");
-        storageField.setAccessible(true);
-        storageField.set(plugin, storage);
-    }
-
     private static final class TestCommand extends Command {
 
         private TestCommand(String name) {
