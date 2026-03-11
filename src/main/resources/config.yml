@@ -45,3 +45,7 @@ messages:
   # Message shown when a trigger is removed by breaking its block.
   # {trigger} is replaced by the trigger name.
   trigger-broken: "&6[RedStoneMe] &aTrigger {trigger} has been removed."
+
+debug:
+  # If enabled, command and protection actions will be logged to the server console.
+  enabled: false

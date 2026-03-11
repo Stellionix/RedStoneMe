@@ -157,6 +157,12 @@ public class RedStoneMe extends JavaPlugin implements Listener {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public void debug(String message) {
+        if (getConfig().getBoolean("debug.enabled", false)) {
+            getLogger().info("[Debug] " + message);
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private void migrateLegacyConfig() {
         File configFile = new File(this.getDataFolder(), "config.yml");

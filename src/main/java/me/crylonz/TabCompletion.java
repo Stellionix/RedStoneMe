@@ -1,5 +1,7 @@
 package me.crylonz;
 
+import me.crylonz.command.CommandSpec;
+import me.crylonz.command.CommandSpecs;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,84 +15,112 @@ import static me.crylonz.RedStoneMe.redStoneTriggers;
 
 public class TabCompletion implements TabCompleter {
 
-    private List<String> list = new ArrayList<>();
+    private final List<String> suggestions = new ArrayList<String>();
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
+        suggestions.clear();
 
-        list.clear();
-        if (cmd.getName().equalsIgnoreCase("rsm")) {
-            if (sender instanceof Player) {
-                Player player = (Player) sender;
+        if (!command.getName().equalsIgnoreCase("rsm")) {
+            return suggestions;
+        }
 
-                if (args.length == 1) {
-                    if (player.hasPermission("redstoneme.help") || player.hasPermission("redstoneme.admin")) {
-                        list.add("help");
-                    }
-                    if (player.hasPermission("redstoneme.new") || player.hasPermission("redstoneme.admin")) {
-                        list.add("new");
-                    }
-                    if (player.hasPermission("redstoneme.destroy") || player.hasPermission("redstoneme.admin")) {
-                        list.add("destroy");
-                    }
-                    if (player.hasPermission("redstoneme.add") || player.hasPermission("redstoneme.admin")) {
-                        list.add("add");
-                    }
-                    if (player.hasPermission("redstoneme.add") || player.hasPermission("redstoneme.admin")) {
-                        list.add("add");
-                    }
-                    if (player.hasPermission("redstoneme.remove") || player.hasPermission("redstoneme.admin")) {
-                        list.add("remove");
-                    }
-                    if (player.hasPermission("redstoneme.radius") || player.hasPermission("redstoneme.admin")) {
-                        list.add("radius");
-                    }
-                    if (player.hasPermission("redstoneme.state") || player.hasPermission("redstoneme.admin")) {
-                        list.add("state");
-                    }
-                    if (player.hasPermission("redstoneme.public") || player.hasPermission("redstoneme.admin")) {
-                        list.add("public");
-                    }
-                    if (player.hasPermission("redstoneme.list") || player.hasPermission("redstoneme.admin")) {
-                        list.add("list");
-                    }
-                }
+        if (!(sender instanceof Player)) {
+            return suggestions;
+        }
 
-                if (args.length == 2) {
-                    if (args[0].equals("destroy") ||
-                            args[0].equals("add") ||
-                            args[0].equals("remove") ||
-                            args[0].equals("radius") ||
-                            args[0].equals("state") ||
-                            args[0].equals("public") ||
-                            args[0].equals("list")) {
+        Player player = (Player) sender;
 
-                        for (RedStoneTrigger trigger : redStoneTriggers) {
-                            if (trigger.hasAccess(player)) {
-                                list.add(trigger.getTriggerName());
-                            }
-                        }
-                    }
-                    if (args[0].equals("new")) {
-                        list.add("<triggerName>");
-                    }
-                }
-                if (args.length == 3) {
-                    if (args[0].equals("new") || args[0].equals("radius")) {
-                        list.add("<Radius>");
-                    }
-                    if (args[0].equals("add") || args[0].equals("remove")) {
-                        for (Player p : Bukkit.getOnlinePlayers()) {
-                            list.add(p.getName());
-                        }
-                    }
-                    if (args[0].equals("state") || args[0].equals("public")) {
-                        list.add("OFF");
-                        list.add("ON");
-                    }
-                }
+        if (args.length == 1) {
+            completeRoot(player);
+        } else if (args.length == 2) {
+            completeSecondArgument(player, args[0]);
+        } else if (args.length == 3) {
+            completeThirdArgument(args[0]);
+        }
+
+        return suggestions;
+    }
+
+    private void completeRoot(Player player) {
+        for (CommandSpec spec : CommandSpecs.ALL) {
+            if (hasPermission(player, spec.permission())) {
+                suggestions.add(spec.name());
             }
         }
-        return list;
+    }
+
+    private void completeSecondArgument(Player player, String subCommand) {
+        if (isTriggerNameCommand(subCommand)) {
+            addAccessibleTriggerNames(player);
+        }
+
+        if (subCommand.equals("new")) {
+            suggestions.add("<triggerName>");
+        }
+
+        if (subCommand.equals("debug")) {
+            suggestions.add("OFF");
+            suggestions.add("ON");
+        }
+
+        if (subCommand.equals("list")) {
+            suggestions.add("<page>");
+        }
+    }
+
+    private void completeThirdArgument(String subCommand) {
+        if (subCommand.equals("new") || subCommand.equals("radius")) {
+            suggestions.add("<Radius>");
+        }
+
+        if (subCommand.equals("add") || subCommand.equals("remove") || subCommand.equals("setowner")) {
+            addOnlinePlayers();
+        }
+
+        if (subCommand.equals("state") || subCommand.equals("public")) {
+            suggestions.add("OFF");
+            suggestions.add("ON");
+        }
+
+        if (subCommand.equals("rename")) {
+            suggestions.add("<newTriggerName>");
+        }
+    }
+
+    private boolean hasPermission(Player player, String permission) {
+        return player.hasPermission(permission) || player.hasPermission("redstoneme.admin");
+    }
+
+    private boolean isTriggerNameCommand(String subCommand) {
+        return subCommand.equals("destroy")
+                || subCommand.equals("info")
+                || subCommand.equals("tp")
+                || subCommand.equals("who")
+                || subCommand.equals("clearplayers")
+                || subCommand.equals("rename")
+                || subCommand.equals("move")
+                || subCommand.equals("toggle")
+                || subCommand.equals("setowner")
+                || subCommand.equals("add")
+                || subCommand.equals("remove")
+                || subCommand.equals("radius")
+                || subCommand.equals("state")
+                || subCommand.equals("public")
+                || subCommand.equals("list");
+    }
+
+    private void addAccessibleTriggerNames(Player player) {
+        for (RedStoneTrigger trigger : redStoneTriggers) {
+            if (trigger.hasAccess(player)) {
+                suggestions.add(trigger.getTriggerName());
+            }
+        }
+    }
+
+    private void addOnlinePlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            suggestions.add(player.getName());
+        }
     }
 }

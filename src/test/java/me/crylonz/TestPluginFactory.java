@@ -10,12 +10,12 @@ import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
-final class TestPluginFactory {
+public final class TestPluginFactory {
 
     private TestPluginFactory() {
     }
 
-    static TestPlugin create(Path dataDirectory) {
+    public static TestPlugin create(Path dataDirectory) {
         try {
             TestPlugin plugin = allocate(TestPlugin.class);
             plugin.initialize(dataDirectory.toFile(), Logger.getLogger("TestPlugin"));
@@ -34,7 +34,7 @@ final class TestPluginFactory {
         return (T) unsafe.allocateInstance(type);
     }
 
-    static final class TestPlugin extends RedStoneMe {
+    public static final class TestPlugin extends RedStoneMe {
 
         private File dataFolder;
         private Logger logger;
@@ -49,11 +49,11 @@ final class TestPluginFactory {
             setJavaPluginField("dataFolder", dataFolder);
         }
 
-        void setPersistStorage(SQLiteStorage persistStorage) {
+        public void setPersistStorage(SQLiteStorage persistStorage) {
             this.persistStorage = persistStorage;
         }
 
-        int getPersistCalls() {
+        public int getPersistCalls() {
             return persistCalls;
         }
 

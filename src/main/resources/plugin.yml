@@ -8,10 +8,10 @@ api-version: 1.13
 commands:
   redstoneme:
     description: all commands of redstoneme
-    usage: /redstoneme new|add|help|remove|destroy|state|radius|public
+    usage: /redstoneme help|new|destroy|info|tp|rename|move|toggle|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
   rsm:
     description: Register a block to redstone it
-    usage: /rsm new|add|help|remove|destroy|state|radius|public
+    usage: /rsm help|new|destroy|info|tp|rename|move|toggle|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
 permissions:
   redstoneme.*:
     description: Gives access to all redstoneme commands
@@ -25,6 +25,12 @@ permissions:
       redstoneme.radius: true
       redstoneme.state: true
       redstoneme.public: true
+      redstoneme.info: true
+      redstoneme.tp: true
+      redstoneme.rename: true
+      redstoneme.move: true
+      redstoneme.reload: true
+      redstoneme.debug: true
   redstoneme.new:
     description: Allows player to generate a new trigger
     default: op
@@ -51,6 +57,24 @@ permissions:
     default: op
   redstoneme.public:
     description: Allows player to make a trigger public
+    default: op
+  redstoneme.info:
+    description: Allows player to inspect a trigger
+    default: op
+  redstoneme.tp:
+    description: Allows player to teleport to a trigger
+    default: op
+  redstoneme.rename:
+    description: Allows player to rename a trigger
+    default: op
+  redstoneme.move:
+    description: Allows player to move a trigger
+    default: op
+  redstoneme.reload:
+    description: Allows player to reload the configuration
+    default: op
+  redstoneme.debug:
+    description: Allows player to enable debug logging
     default: op
   redstoneme.admin:
     description: Allows player to access to all trigger

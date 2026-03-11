@@ -166,7 +166,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         return map;
     }
 
-    void trigger(boolean b) {
+    public void trigger(boolean b) {
         if (loc != null && loc.getWorld() != null) {
             if (this.isEnable()) {
                 if (b)
@@ -178,7 +178,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         }
     }
 
-    boolean hasAccess(Player player) {
+    public boolean hasAccess(Player player) {
         if (this.getOwner().equals(player.getUniqueId().toString())) {
             return true;
         }

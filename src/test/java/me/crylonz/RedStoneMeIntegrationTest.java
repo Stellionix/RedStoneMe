@@ -93,6 +93,24 @@ class RedStoneMeIntegrationTest {
     }
 
     @Test
+    void newCommandsUpdateTriggerState() {
+        RedStoneTrigger trigger = createTrigger("gate");
+        RedStoneMe.redStoneTriggers.add(trigger);
+
+        assertTrue(executor.onCommand(owner, command, "rsm", new String[]{"rename", "gate", "gate2"}));
+        assertTrue(executor.onCommand(owner, command, "rsm", new String[]{"toggle", "gate2"}));
+        assertTrue(executor.onCommand(owner, command, "rsm", new String[]{"clearplayers", "gate2"}));
+        assertTrue(executor.onCommand(owner, command, "rsm", new String[]{"setowner", "gate2", "guest"}));
+        assertTrue(executor.onCommand(owner, command, "rsm", new String[]{"debug", "on"}));
+
+        assertEquals("gate2", trigger.getTriggerName());
+        assertFalse(trigger.isEnable());
+        assertEquals(guest.getUniqueId().toString(), trigger.getOwner());
+        assertTrue(plugin.getConfig().getBoolean("debug.enabled"));
+        assertEquals(4, plugin.getPersistCalls());
+    }
+
+    @Test
     void destroyCommandRemovesTriggerAndPersistsDeletion() {
         RedStoneTrigger trigger = createTrigger("gate");
         RedStoneMe.redStoneTriggers.add(trigger);
