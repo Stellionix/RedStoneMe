@@ -7,6 +7,7 @@ import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.crylonz.RedStoneMe;
 import me.crylonz.RedStoneTrigger;
 import me.crylonz.TestPluginFactory;
+import me.crylonz.TriggerAction;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.junit.jupiter.api.AfterEach;
@@ -103,6 +104,18 @@ class CommandUnitTest {
 
         assertEquals(1, trigger.getPlayers().size());
         assertTrue(trigger.getPlayers().contains(owner.getUniqueId().toString()));
+        assertEquals(1, plugin.getPersistCalls());
+    }
+
+    @Test
+    void actionCommandUpdatesTriggerAction() {
+        ActionCommand command = new ActionCommand(context);
+        RedStoneTrigger trigger = createTrigger("gate");
+        RedStoneMe.redStoneTriggers.add(trigger);
+
+        assertTrue(command.execute(owner, new String[]{"action", "gate", "REDSTONE_BLOCK"}));
+
+        assertEquals(TriggerAction.REDSTONE_BLOCK, trigger.getAction());
         assertEquals(1, plugin.getPersistCalls());
     }
 

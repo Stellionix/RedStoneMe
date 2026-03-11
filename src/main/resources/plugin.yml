@@ -8,10 +8,10 @@ api-version: 1.13
 commands:
   redstoneme:
     description: all commands of redstoneme
-    usage: /redstoneme help|new|destroy|info|tp|rename|move|toggle|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
+    usage: /redstoneme help|new|destroy|info|tp|rename|move|toggle|action|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
   rsm:
     description: Register a block to redstone it
-    usage: /rsm help|new|destroy|info|tp|rename|move|toggle|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
+    usage: /rsm help|new|destroy|info|tp|rename|move|toggle|action|add|remove|clearplayers|who|radius|state|public|setowner|list|reload|debug
 permissions:
   redstoneme.*:
     description: Gives access to all redstoneme commands
@@ -20,6 +20,7 @@ permissions:
       redstoneme.destroy: true
       redstoneme.add: true
       redstoneme.remove: true
+      redstoneme.action: true
       redstoneme.help: true
       redstoneme.list: true
       redstoneme.radius: true
@@ -45,6 +46,9 @@ permissions:
     default: op
   redstoneme.remove:
     description: Allows player to remove a player to a trigger
+    default: op
+  redstoneme.action:
+    description: Allows player to edit the action of a trigger
     default: op
   redstoneme.help:
     description: Allows player to see help

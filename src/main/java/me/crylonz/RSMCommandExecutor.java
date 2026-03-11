@@ -1,6 +1,7 @@
 package me.crylonz;
 
 import me.crylonz.command.AddCommand;
+import me.crylonz.command.ActionCommand;
 import me.crylonz.command.ClearPlayersCommand;
 import me.crylonz.command.CommandContext;
 import me.crylonz.command.CommandSpec;
@@ -47,6 +48,7 @@ public class RSMCommandExecutor implements CommandExecutor {
         register(new PublicCommand(context));
         register(new AddCommand(context));
         register(new RemoveCommand(context));
+        register(new ActionCommand(context));
         register(new InfoCommand(context));
         register(new TpCommand(context));
         register(new RenameCommand(context));

@@ -153,6 +153,7 @@ public class CommandContext {
         player.sendMessage(ChatColor.WHITE + "Radius: " + ChatColor.LIGHT_PURPLE + trigger.getRadius());
         player.sendMessage(ChatColor.WHITE + "State: " + ChatColor.LIGHT_PURPLE + (trigger.isEnable() ? "ON" : "OFF"));
         player.sendMessage(ChatColor.WHITE + "Access: " + ChatColor.LIGHT_PURPLE + (trigger.isPublic() ? "PUBLIC" : "PRIVATE"));
+        player.sendMessage(ChatColor.WHITE + "Action: " + ChatColor.LIGHT_PURPLE + trigger.getAction().name());
         player.sendMessage(ChatColor.WHITE + "Material: " + ChatColor.LIGHT_PURPLE + trigger.getMaterial());
         player.sendMessage(ChatColor.WHITE + "Players: " + ChatColor.LIGHT_PURPLE + trigger.getPlayers().size());
         return true;

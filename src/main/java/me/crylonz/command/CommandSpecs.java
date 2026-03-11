@@ -14,6 +14,7 @@ public final class CommandSpecs {
     public static final CommandSpec PUBLIC = spec("public", "redstoneme.public", "/rsm public <TriggerName> <OFF|ON>", "Change trigger access");
     public static final CommandSpec ADD = spec("add", "redstoneme.add", "/rsm add <TriggerName> <PlayerName>", "Add a player to the trigger");
     public static final CommandSpec REMOVE = spec("remove", "redstoneme.remove", "/rsm remove <TriggerName> <PlayerName>", "Remove a player from the trigger");
+    public static final CommandSpec ACTION = spec("action", "redstoneme.action", "/rsm action <TriggerName> [ActionType]", "Read or update trigger action");
     public static final CommandSpec INFO = spec("info", "redstoneme.info", "/rsm info <TriggerName>", "Show trigger details");
     public static final CommandSpec TP = spec("tp", "redstoneme.tp", "/rsm tp <TriggerName>", "Teleport to the trigger");
     public static final CommandSpec RENAME = spec("rename", "redstoneme.rename", "/rsm rename <OldName> <NewName>", "Rename a trigger");
@@ -27,7 +28,7 @@ public final class CommandSpecs {
 
     public static final List<CommandSpec> ALL = Arrays.asList(
             HELP, NEW, DESTROY, INFO, TP, RENAME, MOVE, TOGGLE,
-            ADD, REMOVE, CLEAR_PLAYERS, WHO, RADIUS, STATE, PUBLIC,
+            ADD, REMOVE, ACTION, CLEAR_PLAYERS, WHO, RADIUS, STATE, PUBLIC,
             SET_OWNER, LIST, RELOAD, DEBUG
     );
 

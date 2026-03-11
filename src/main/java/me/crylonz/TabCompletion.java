@@ -83,6 +83,12 @@ public class TabCompletion implements TabCompleter {
             suggestions.add("ON");
         }
 
+        if (subCommand.equals("action")) {
+            for (TriggerAction action : TriggerAction.values()) {
+                suggestions.add(action.name());
+            }
+        }
+
         if (subCommand.equals("rename")) {
             suggestions.add("<newTriggerName>");
         }
@@ -101,6 +107,7 @@ public class TabCompletion implements TabCompleter {
                 || subCommand.equals("rename")
                 || subCommand.equals("move")
                 || subCommand.equals("toggle")
+                || subCommand.equals("action")
                 || subCommand.equals("setowner")
                 || subCommand.equals("add")
                 || subCommand.equals("remove")

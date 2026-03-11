@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.Powerable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +49,37 @@ class RedStoneTriggerTest {
     }
 
     @Test
+    void triggerCanUseAlternativeActionMaterial() {
+        Location location = new Location(world, 10, 64, 11);
+        world.getBlockAt(location).setType(Material.STONE);
+        RedStoneTrigger trigger = new RedStoneTrigger("gate", 4, location, Material.STONE, owner);
+        trigger.setAction(TriggerAction.REDSTONE_BLOCK);
+
+        trigger.trigger(true);
+        assertEquals(Material.REDSTONE_BLOCK, world.getBlockAt(location).getType());
+
+        trigger.trigger(false);
+        assertEquals(Material.STONE, world.getBlockAt(location).getType());
+    }
+
+    @Test
+    void leverActionPowersLeverAndRestoresOriginalBlock() {
+        Location location = new Location(world, 10, 64, 12);
+        world.getBlockAt(location).setType(Material.STONE);
+        RedStoneTrigger trigger = new RedStoneTrigger("gate", 4, location, Material.STONE, owner);
+        trigger.setAction(TriggerAction.LEVER);
+
+        trigger.trigger(true);
+
+        assertEquals(Material.LEVER, world.getBlockAt(location).getType());
+        assertTrue(((Powerable) world.getBlockAt(location).getBlockData()).isPowered());
+
+        trigger.trigger(false);
+
+        assertEquals(Material.STONE, world.getBlockAt(location).getType());
+    }
+
+    @Test
     void disabledTriggerKeepsOriginalMaterial() {
         Location location = new Location(world, 11, 64, 11);
         world.getBlockAt(location).setType(Material.STONE);
@@ -66,6 +98,7 @@ class RedStoneTriggerTest {
         trigger.addPlayer(guest);
         trigger.setEnable(false);
         trigger.setPublic(true);
+        trigger.setAction(TriggerAction.REDSTONE_BLOCK);
 
         Map<String, Object> serialized = trigger.serialize();
         RedStoneTrigger restored = RedStoneTrigger.deserialize(serialized);
@@ -77,6 +110,7 @@ class RedStoneTriggerTest {
         assertEquals(owner.getUniqueId().toString(), restored.getOwner());
         assertTrue(restored.isPublic());
         assertFalse(restored.isEnable());
+        assertEquals(TriggerAction.REDSTONE_BLOCK, restored.getAction());
         assertTrue(restored.getPlayers().contains(guest.getUniqueId().toString()));
     }
 

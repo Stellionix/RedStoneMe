@@ -23,17 +23,19 @@ public class RedStoneTrigger implements ConfigurationSerializable {
     private Location loc;
     private boolean isEnable;
     private Material material;
+    private TriggerAction action;
     private String worldName;
     private boolean isPublic;
 
     public RedStoneTrigger(String name, int radius, ArrayList<String> players, Location loc, boolean isEnable,
-                           Material material, String owner, String worldName, boolean isPublic) {
+                           Material material, TriggerAction action, String owner, String worldName, boolean isPublic) {
         this.triggerName = name;
         this.players = players;
         this.radius = radius;
         this.loc = loc;
         this.isEnable = isEnable;
         this.material = material;
+        this.action = action;
         this.owner = owner;
         this.worldName = worldName;
         this.isPublic = isPublic;
@@ -45,6 +47,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         this.loc = loc;
         this.isEnable = true;
         this.material = material;
+        this.action = TriggerAction.REDSTONE_TORCH;
         this.owner = owner.getUniqueId().toString();
         this.worldName = loc.getWorld().getName();
         this.isPublic = false;
@@ -61,6 +64,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
                     myloc,
                     (boolean) map.get("isEnable"),
                     Material.getMaterial((String) map.get("material")),
+                    TriggerAction.fromName((String) map.get("action")),
                     (String) map.get("owner"),
                     (String) map.get("worldName"),
                     (boolean) map.get("isPublic"));
@@ -135,6 +139,14 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         this.owner = owner;
     }
 
+    public TriggerAction getAction() {
+        return action;
+    }
+
+    public void setAction(TriggerAction action) {
+        this.action = action;
+    }
+
     public String getWorldName() {
         return worldName;
     }
@@ -160,6 +172,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
         map.put("location", worldName + ";" + loc.getX() + ";" + loc.getY() + ";" + loc.getZ() + ";");
         map.put("isEnable", isEnable);
         map.put("material", material.toString());
+        map.put("action", action.name());
         map.put("owner", owner);
         map.put("worldName", worldName);
         map.put("isPublic", isPublic);
@@ -167,15 +180,7 @@ public class RedStoneTrigger implements ConfigurationSerializable {
     }
 
     public void trigger(boolean b) {
-        if (loc != null && loc.getWorld() != null) {
-            if (this.isEnable()) {
-                if (b)
-                    loc.getWorld().getBlockAt(loc).setType(Material.REDSTONE_TORCH);
-                else
-                    loc.getWorld().getBlockAt(loc).setType(material);
-            } else
-                loc.getWorld().getBlockAt(loc).setType(material);
-        }
+        action.apply(loc, material, isEnable(), b);
     }
 
     public boolean hasAccess(Player player) {

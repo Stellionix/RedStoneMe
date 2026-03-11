@@ -43,8 +43,13 @@ public class SQLiteStorage {
                     "z REAL NOT NULL," +
                     "enabled INTEGER NOT NULL," +
                     "material TEXT NOT NULL," +
+                    "action_type TEXT NOT NULL DEFAULT 'REDSTONE_TORCH'," +
                     "public_access INTEGER NOT NULL" +
                     ")");
+            try {
+                statement.executeUpdate("ALTER TABLE triggers ADD COLUMN action_type TEXT NOT NULL DEFAULT 'REDSTONE_TORCH'");
+            } catch (SQLException ignored) {
+            }
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS trigger_players (" +
                     "trigger_name TEXT NOT NULL," +
                     "player_uuid TEXT NOT NULL," +
@@ -58,7 +63,7 @@ public class SQLiteStorage {
 
     public ArrayList<RedStoneTrigger> loadTriggers() {
         ArrayList<RedStoneTrigger> triggers = new ArrayList<>();
-        String query = "SELECT trigger_name, owner_uuid, radius, world_name, x, y, z, enabled, material, public_access " +
+        String query = "SELECT trigger_name, owner_uuid, radius, world_name, x, y, z, enabled, material, action_type, public_access " +
                 "FROM triggers ORDER BY trigger_name";
 
         try (Connection connection = DriverManager.getConnection(jdbcUrl);
@@ -87,6 +92,7 @@ public class SQLiteStorage {
                         location,
                         resultSet.getInt("enabled") == 1,
                         material,
+                        TriggerAction.fromName(resultSet.getString("action_type")),
                         resultSet.getString("owner_uuid"),
                         worldName,
                         resultSet.getInt("public_access") == 1
@@ -108,8 +114,8 @@ public class SQLiteStorage {
             }
 
             try (PreparedStatement triggerStatement = connection.prepareStatement(
-                    "INSERT INTO triggers(trigger_name, owner_uuid, radius, world_name, x, y, z, enabled, material, public_access) " +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    "INSERT INTO triggers(trigger_name, owner_uuid, radius, world_name, x, y, z, enabled, material, action_type, public_access) " +
+                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                  PreparedStatement playerStatement = connection.prepareStatement(
                          "INSERT INTO trigger_players(trigger_name, player_uuid) VALUES (?, ?)")) {
                 for (RedStoneTrigger trigger : triggers) {
@@ -122,7 +128,8 @@ public class SQLiteStorage {
                     triggerStatement.setDouble(7, trigger.getLoc().getZ());
                     triggerStatement.setInt(8, trigger.isEnable() ? 1 : 0);
                     triggerStatement.setString(9, trigger.getMaterial().name());
-                    triggerStatement.setInt(10, trigger.isPublic() ? 1 : 0);
+                    triggerStatement.setString(10, trigger.getAction().name());
+                    triggerStatement.setInt(11, trigger.isPublic() ? 1 : 0);
                     triggerStatement.addBatch();
 
                     for (String playerUuid : trigger.getPlayers()) {
