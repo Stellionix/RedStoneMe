@@ -4,8 +4,7 @@ plugins {
 }
 
 group = "my.crylonz"
-version = "3.0.0"
-
+version = "3.0.1"
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -24,7 +23,7 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
-    implementation("org.xerial:sqlite-jdbc:3.50.2.0")
+    testImplementation("org.xerial:sqlite-jdbc:3.50.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.85.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
