@@ -14,6 +14,9 @@ java {
 
 repositories {
     mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/") {
+        name = "papermc-repo"
+    }
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
         name = "spigot-repo"
     }
@@ -21,12 +24,24 @@ repositories {
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT")
-    testImplementation("org.xerial:sqlite-jdbc:3.50.2.0")
+    implementation("org.xerial:sqlite-jdbc:3.50.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.85.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType<JavaCompile>().configureEach {
+tasks.compileJava {
     options.encoding = "UTF-8"
     options.release = 8
+}
+
+tasks.compileTestJava {
+    options.encoding = "UTF-8"
+    options.release = 17
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 tasks.processResources {
