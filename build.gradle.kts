@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "my.crylonz"
-version = "2.5"
+version = "3.0.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -57,6 +57,6 @@ tasks.jar {
 }
 
 tasks.named<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>("shadowJar") {
-    archiveBaseName = "RedStoneMe"
+    archiveBaseName = "redstone-me"
     archiveClassifier = ""
 }

@@ -30,8 +30,8 @@ public class MoveCommand extends AbstractSubCommand {
         }
 
         Block block = player.getTargetBlockExact(5);
-        if (block == null) {
-            return context().error(player, "You need to target with your cursor the block you want to trigger");
+        if (!context().validateTargetBlock(player, block)) {
+            return true;
         }
 
         trigger.trigger(false);

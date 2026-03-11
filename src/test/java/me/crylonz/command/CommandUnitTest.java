@@ -172,6 +172,36 @@ class CommandUnitTest {
         assertTrue(header.contains("page 2/2"));
     }
 
+    @Test
+    void newCommandRejectsDisallowedTriggerMaterial() {
+        NewCommand command = new NewCommand(context);
+        plugin.getConfig().set("selection.allowed-trigger-blocks", java.util.Collections.singletonList("STONE"));
+        world.getBlockAt(30, 64, 30).setType(Material.BEDROCK);
+        owner.teleport(new Location(world, 30, 64, 25));
+
+        assertTrue(command.execute(owner, new String[]{"new", "gate", "5"}));
+
+        assertTrue(RedStoneMe.redStoneTriggers.isEmpty());
+        assertEquals(0, plugin.getPersistCalls());
+        assertTrue(owner.nextMessage().contains("cannot be used as a trigger"));
+    }
+
+    @Test
+    void moveCommandRejectsMaterialOutsideAllowedList() {
+        MoveCommand command = new MoveCommand(context);
+        plugin.getConfig().set("selection.allowed-trigger-blocks", java.util.Collections.singletonList("STONE"));
+        RedStoneTrigger trigger = createTrigger("gate");
+        RedStoneMe.redStoneTriggers.add(trigger);
+        world.getBlockAt(31, 64, 31).setType(Material.DIRT);
+        owner.teleport(new Location(world, 31, 64, 26));
+
+        assertTrue(command.execute(owner, new String[]{"move", "gate"}));
+
+        assertEquals(new Location(world, 20, 64, 20), trigger.getLoc());
+        assertEquals(0, plugin.getPersistCalls());
+        assertTrue(owner.nextMessage().contains("not allowed for triggers"));
+    }
+
     private RedStoneTrigger createTrigger(String name) {
         Location location = new Location(world, 20, 64, 20);
         world.getBlockAt(location).setType(Material.STONE);

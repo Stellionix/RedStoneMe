@@ -1,15 +1,13 @@
 package me.crylonz;
 
 import me.crylonz.action.BlockReplaceActionHandler;
-import me.crylonz.action.LeverActionHandler;
 import me.crylonz.action.TriggerActionHandler;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 public enum TriggerAction {
     REDSTONE_TORCH(new BlockReplaceActionHandler(Material.REDSTONE_TORCH)),
-    REDSTONE_BLOCK(new BlockReplaceActionHandler(Material.REDSTONE_BLOCK)),
-    LEVER(new LeverActionHandler());
+    REDSTONE_BLOCK(new BlockReplaceActionHandler(Material.REDSTONE_BLOCK));
 
     private final TriggerActionHandler handler;
 

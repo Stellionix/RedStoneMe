@@ -2,10 +2,12 @@ package me.crylonz.command;
 
 import me.crylonz.RedStoneMe;
 import me.crylonz.RedStoneTrigger;
+import me.crylonz.TriggerTargetBlockPolicy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -88,6 +90,15 @@ public class CommandContext {
 
     public boolean ownerOnly(Player player) {
         return error(player, "Only the owner can access to this trigger");
+    }
+
+    public boolean validateTargetBlock(Player player, Block block) {
+        TriggerTargetBlockPolicy.ValidationResult result = plugin.getTriggerTargetBlockPolicy().validate(player, block);
+        if (result.isValid()) {
+            return true;
+        }
+        error(player, result.getMessage());
+        return false;
     }
 
     public String prefix(boolean success) {

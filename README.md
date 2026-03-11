@@ -30,7 +30,6 @@ Current trigger action types:
 
 - `REDSTONE_TORCH`
 - `REDSTONE_BLOCK`
-- `LEVER`
 
 ## Configuration
 The plugin stores trigger data in SQLite and keeps general settings in `config.yml`.

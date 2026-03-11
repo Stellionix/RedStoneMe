@@ -6,7 +6,6 @@ import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.data.Powerable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,23 +58,6 @@ class RedStoneTriggerTest {
         assertEquals(Material.REDSTONE_BLOCK, world.getBlockAt(location).getType());
 
         trigger.trigger(false);
-        assertEquals(Material.STONE, world.getBlockAt(location).getType());
-    }
-
-    @Test
-    void leverActionPowersLeverAndRestoresOriginalBlock() {
-        Location location = new Location(world, 10, 64, 12);
-        world.getBlockAt(location).setType(Material.STONE);
-        RedStoneTrigger trigger = new RedStoneTrigger("gate", 4, location, Material.STONE, owner);
-        trigger.setAction(TriggerAction.LEVER);
-
-        trigger.trigger(true);
-
-        assertEquals(Material.LEVER, world.getBlockAt(location).getType());
-        assertTrue(((Powerable) world.getBlockAt(location).getBlockData()).isPowered());
-
-        trigger.trigger(false);
-
         assertEquals(Material.STONE, world.getBlockAt(location).getType());
     }
 

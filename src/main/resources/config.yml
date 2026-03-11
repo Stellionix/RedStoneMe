@@ -1,5 +1,5 @@
 ####################################################################################################
-# DeadChest Configuration
+# RedstoneMe Configuration
 #
 # Plugin page and documentation:
 #   https://dev.bukkit.org/projects/redstoneme
@@ -15,6 +15,29 @@ storage:
   # SQLite database filename stored inside the plugin data folder.
   # Example final path: plugins/RedStoneMe/redstoneme.db
   sqlite-file: redstoneme.db
+
+selection:
+  # If enabled, RedStoneMe checks whether the targeted block could normally be broken
+  # by the player before allowing /rsm new or /rsm move on it.
+  # This helps respect external protections such as WorldGuard or spawn protection.
+  respect-break-protection: true
+
+  # Whitelist of block types allowed as trigger source blocks.
+  # Use Bukkit material names. If the list is empty, every block is allowed except
+  # internal hard-blocked materials such as BEDROCK, BARRIER and command blocks.
+  allowed-trigger-blocks:
+    - STONE
+    - COBBLESTONE
+    - STONE_BRICKS
+    - OAK_PLANKS
+    - SPRUCE_PLANKS
+    - BIRCH_PLANKS
+    - IRON_BLOCK
+    - GOLD_BLOCK
+    - DIAMOND_BLOCK
+    - EMERALD_BLOCK
+    - REDSTONE_LAMP
+    - OBSIDIAN
 
 protection:
   # If true, players who are not the trigger owner cannot break the trigger block.

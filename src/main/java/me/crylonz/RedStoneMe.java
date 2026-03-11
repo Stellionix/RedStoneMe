@@ -24,6 +24,7 @@ public class RedStoneMe extends JavaPlugin implements Listener {
     private TriggerRepository triggerRepository;
     private TriggerProtectionService triggerProtectionService;
     private TriggerScheduler triggerScheduler;
+    private TriggerTargetBlockPolicy triggerTargetBlockPolicy;
 
     public void onEnable() {
         ensureDataFolder();
@@ -102,6 +103,13 @@ public class RedStoneMe extends JavaPlugin implements Listener {
             triggerScheduler = new TriggerScheduler(this);
         }
         return triggerScheduler;
+    }
+
+    public TriggerTargetBlockPolicy getTriggerTargetBlockPolicy() {
+        if (triggerTargetBlockPolicy == null) {
+            triggerTargetBlockPolicy = new TriggerTargetBlockPolicy(this);
+        }
+        return triggerTargetBlockPolicy;
     }
 }
 
