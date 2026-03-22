@@ -7,6 +7,9 @@
     <a href="https://github.com/apavarino/redstoneme/actions/workflows/ci.yml">
         <img src="https://github.com/apavarino/redstoneme/actions/workflows/ci.yml/badge.svg" alt="CI"/>
     </a>
+    <a href="https://stellionix.github.io/RedStoneMe/">
+        <img src="https://img.shields.io/badge/docs-online-blue" alt="Docs"/>
+    </a>
     <img src="https://img.shields.io/github/license/apavarino/redstoneme" alt="licence"/>
     <img src="https://img.shields.io/github/last-commit/apavarino/redstoneme" alt="commit"/>
 </h2>
@@ -43,6 +46,16 @@ Important configuration areas:
 - `protection.breaking-trigger-deletes-it`: decides whether breaking a trigger removes it
 - `messages.*`: configurable in-game protection and deletion messages
 - `debug.enabled`: enables console debug logs
+
+## Documentation
+The official documentation is available at [stellionix.github.io/RedStoneMe](https://stellionix.github.io/RedStoneMe/).
+
+Useful pages:
+
+- [Installation](https://stellionix.github.io/RedStoneMe/latest/installation/)
+- [Configuration](https://stellionix.github.io/RedStoneMe/latest/configuration/)
+- [Commands and Permissions](https://stellionix.github.io/RedStoneMe/latest/commands-and-perms/)
+- [Troubleshooting](https://stellionix.github.io/RedStoneMe/latest/troubleshooting/)
 
 ## Commands
 Main aliases:

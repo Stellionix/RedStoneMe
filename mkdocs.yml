@@ -1,0 +1,25 @@
+site_name: RedStoneMe Documentation
+site_url: https://stellionix.github.io/RedStoneMe/
+repo_url: https://github.com/Stellionix/RedStoneMe
+repo_name: stellionix/RedStoneMe
+
+plugins:
+  - search
+  - stellionix-shared-docs
+
+theme:
+  name: material
+
+nav:
+  - Getting Started:
+      - Home: index.md
+      - Download: download.md
+      - Installation: installation.md
+      - How It Works: how-it-works.md
+  - Administration:
+      - Configuration: configuration.md
+      - Commands and Permissions: commands-and-perms.md
+      - Customization: customization.md
+      - Troubleshooting: troubleshooting.md
+  - Developer:
+      - Contribution: contribution.md

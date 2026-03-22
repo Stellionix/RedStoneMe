@@ -5,6 +5,13 @@ plugins {
 
 group = "my.crylonz"
 version = "3.0.1"
+
+tasks.register("printVersion") {
+    doLast {
+        println(project.version)
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
